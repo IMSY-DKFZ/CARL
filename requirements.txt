@@ -1,0 +1,14 @@
+numpy
+transformers
+timm
+einops
+pytorch-lightning
+tensorboard
+matplotlib
+torchmetrics
+pandas
+rasterio
+h5py
+tifffile
+scipy
+kornia

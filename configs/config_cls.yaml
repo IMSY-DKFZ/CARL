@@ -1,0 +1,58 @@
+model_kwargs:
+  patch_size: 8
+  image_size: 128
+  n_classes: 10
+  spec_encoder_kwargs:
+    embed_dim: 384
+    depth: 8
+    num_heads: 6
+    layer_scale: 0.0001
+    pos_enc_sigma: 3
+    n_queries: 8
+    qkv_bias: true
+    ffn_bias: true
+    drop_path_rate: 0.
+    proj_drop: 0.
+    drop: 0.
+    attn_drop: 0.
+  spat_encoder_kwargs:
+    model_name: timm/eva02_base_patch14_224.mim_in22k # choose any Eva/Vit-based Timm model
+    depth: 8
+    model_kwargs:
+      drop_rate: 0.
+      pos_drop_rate: 0.
+      patch_drop_rate: 0.
+      proj_drop_rate: 0.
+      attn_drop_rate: 0.
+      drop_path_rate: 0.
+data_kwargs:
+  train_dataset:
+    name: GeoBenchCls
+    root_dir: <path>
+    split: train
+  val_dataset:
+    name: GeoBenchCls
+    root_dir: <path>
+    split: valid
+  test_dataset:
+    name: GeoBenchCls
+    root_dir: <path>
+    split: test
+training_kwargs:
+  batch_size: 16
+  num_workers: 4
+  ssl_ckpt_path: carl_ssl_checkpoint.ckpt # path to CARL-SSL checkpoint, set to null if not using CARL-SSL
+  monitor_metric: val_accuracy
+  log_dir: logs/cls_runs
+  learning_rate: 1e-3
+  multi_label: false # true for bigearthnet else false
+lightning_kwargs:
+  max_epochs: 50
+  accelerator: gpu
+  devices: 1
+  precision: bf16-mixed
+  check_val_every_n_epoch: 5
+  log_every_n_steps: 10
+  enable_checkpointing: true
+  num_sanity_val_steps: 0
+  enable_progress_bar: false

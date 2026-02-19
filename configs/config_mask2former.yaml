@@ -1,0 +1,115 @@
+model_kwargs:
+  patch_size: 8
+  image_size: 128
+  n_classes: 10
+  spec_encoder_kwargs:
+    embed_dim: 384
+    depth: 8
+    num_heads: 6
+    layer_scale: 0.0001
+    pos_enc_sigma: 3
+    n_queries: 8
+    qkv_bias: true
+    ffn_bias: true
+    drop_path_rate: 0.
+    proj_drop: 0.
+    drop: 0.
+    attn_drop: 0.
+  spat_encoder_kwargs:
+    model_name: timm/eva02_base_patch14_224.mim_in22k # choose any Eva/Vit-based Timm model
+    depth: 8
+    model_kwargs:
+      drop_rate: 0.
+      pos_drop_rate: 0.
+      patch_drop_rate: 0.
+      proj_drop_rate: 0.
+      attn_drop_rate: 0.
+      drop_path_rate: 0.
+  vit_adapter_kwargs:
+    conv_inplane: 64
+    n_points: 4
+    deform_num_heads: 12
+    interaction_indexes:
+      - [0, 1]
+      - [2, 3]
+      - [4, 5]
+      - [6, 7]
+    with_cffn: true
+    cffn_ratio: 0.25
+    add_vit_features: true
+    in_channels: 1
+    use_extra_extractor: true
+  mask2former_kwargs:
+    model_name: null
+    backbone_config: # not used here as we are using VitAdapter, just for compatibility
+      architectures: [SwinForImageClassification]
+      hidden_sizes: [96, 192, 384, 768]
+      num_heads: [3, 6, 12, 24]
+      depths: [2, 2, 18, 2]
+      embed_dim: 96
+      encoder_stride: 32
+      hidden_size: 768
+      hidden_act: gelu
+      model_type: swin
+      out_features: ["stage1" ,"stage2", "stage3", "stage4"]
+      stage_names: ["stem", "stage1" ,"stage2", "stage3", "stage4"]
+      out_indices: [1, 2, 3, 4]
+      patch_size: 4
+      window_size: 7
+      num_layers: 4
+    mask_feature_size: 256
+    mask_weight: 5.0
+    dice_weight: 5.0
+    class_weight: 2.0
+    no_object_weight: 0.1
+    num_attention_heads: 8
+    num_hidden_layers: 10
+    num_queries: 50
+    output_auxiliary_logits: null
+    oversample_ratio: 3.0
+    pre_norm: false
+    train_num_points: 12544
+    use_auxiliary_loss: true
+    importance_sample_ratio: 0.75
+    ignore_value: -1
+    hidden_dim: 256
+    feature_size: 256
+    feature_strides: [4, 8, 16, 32]
+    encoder_layers: 6
+    encoder_feedforward_dim: 1024
+    dim_feedforward: 2048
+    decoder_layers: 10
+    common_stride: 4
+data_kwargs:
+  train_dataset:
+    name: GeoBenchSeg
+    root_dir:  <path>
+    split: train
+  val_dataset:
+    name: GeoBenchSeg
+    root_dir: <path>
+    split: valid
+  test_dataset:
+    name: GeoBenchSeg
+    root_dir: <path>
+    split: test
+training_kwargs:
+  batch_size: 16
+  num_workers: 4
+  ssl_ckpt_path: carl_ssl_checkpoint.ckpt # path to CARL-SSL checkpoint, set to null if not using CARL-SSL
+  monitor_metric: val_mIoU
+  log_dir: logs/mask2former_runs
+  learning_rate: 1e-4
+  weight_decay: 1e-2
+  freeze_spec_encoder: true
+  freeze_spat_encoder: true
+lightning_kwargs:
+  max_epochs: 50
+  accelerator: gpu
+  devices: 1
+  precision: bf16-mixed
+  check_val_every_n_epoch: 1
+  log_every_n_steps: 10
+  enable_checkpointing: true
+  num_sanity_val_steps: 0
+  enable_progress_bar: false

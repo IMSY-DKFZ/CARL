@@ -1,0 +1,95 @@
+model_kwargs:
+  image_size: 128
+  patch_size: 8
+  n_classes: 10
+  spec_encoder_kwargs:
+    embed_dim: 384
+    depth: 8
+    num_heads: 6
+    pos_enc_sigma: 3
+    n_queries: 8
+  spat_encoder_kwargs:
+    model_name: timm/eva02_base_patch14_224.mim_in22k # choose any Eva/Vit-based Timm model
+    depth: 8
+    model_kwargs:
+      drop_rate: 0.
+      pos_drop_rate: 0.
+      patch_drop_rate: 0.
+      proj_drop_rate: 0.
+      attn_drop_rate: 0.
+      drop_path_rate: 0.
+  spec_predictor_kwargs:
+    predictor_embed_dim: 384
+    depth: 3
+    num_heads: 6
+    mlp_ratio: 4
+    pos_enc_sigma: 3
+  spat_predictor_kwargs:
+    predictor_embed_dim: 384
+    depth: 3
+    num_heads: 6
+    mlp_ratio: 4
+spectral_masking_kwargs:
+    pred_mask_scale: [0.15, 0.3]
+    npred: 2
+    min_keep: 0.2
+spatial_masking_kwargs:
+    enc_mask_scale: [0.5, 0.75]
+    pred_mask_scale: [0.3, 0.5]
+    aspect_ratio: [0.75, 1.5]
+    nenc: 1
+    npred: 2
+    min_keep: 4
+    allow_overlap: false
+loss_coeff:
+  spatial_coeff:
+    loss_weight: 1.0
+    inv_coeff: 1.0
+    var_coeff: 1.0
+    cov_coeff: 0.05
+    var_param: 1
+  spectral_coeff:
+    loss_weight: 1.0
+    inv_coeff: 1.0
+    var_coeff: 1.0
+    cov_coeff: 0.05
+    var_param: 1
+ema:
+  - 0.996
+  - 0.99999
+data_kwargs:
+  train_dataset:
+    - name: HySpecNetSSL
+      root_dir: <path>
+      wlens_path: <path>
+      n_channels: 64
+    - name: BigEarthNetSSL
+      root_dir: <path>
+    - name: SpectralEarthSSL
+      root_dir: <path>
+      wlens_path: <path>
+      n_channels: 64
+  val_dataset:
+    - name: GeoBenchCls
+      root_dir: <path>
+      split: train
+    - name: GeoBenchCls
+      root_dir: <path>
+      split: valid
+training_kwargs:
+  batch_size: 16
+  num_workers: 4
+  ckpt_path: null
+  monitor_metric: val_knn_acc
+  log_dir: logs/ssl_runs
+  learning_rate: 1e-4
+  weight_decay: 1e-2
+  min_lr: 1e-6
+lightning_kwargs:
+  max_epochs: 50
+  accelerator: gpu
+  devices: 1
+  precision: bf16-mixed
+  log_every_n_steps: 10
+  num_sanity_val_steps: 0
+  enable_progress_bar: false
