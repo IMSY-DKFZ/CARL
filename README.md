@@ -1,11 +1,23 @@
 # CARL
 
-Camera-Agnostic Representation Learning for Spectral Image Analysis
+[![arXiv](https://img.shields.io/badge/arXiv-2504.19223-b31b1b.svg)](https://arxiv.org/abs/2504.19223)
+[![Conference](https://img.shields.io/badge/ICLR-2026-blue)](https://iclr.cc/virtual/2026/poster/10009281)
 
-Authors: Alexander Baumann, Leonardo Ayala, Silvia Seidlitz, Jan Sellner,
+### Camera-Agnostic Representation Learning for Spectral Image Analysis
+
+✔ Sensor-agnostic   
+✔ Self-supervised pretraining  
+✔ Classification  
+✔ Segmentation  
+✔ Satellite imaging SSL-checkpoint  
+
+### 📄 Publication:
+Accepted at **ICLR 2026**  
+
+**Authors:** Alexander Baumann, Leonardo Ayala, Silvia Seidlitz, Jan Sellner,
 Alexander Studier-Fischer, Berkin Özdemir, Lena Maier-Hein*, Slobodan Ilic*
 
-Paper: https://arxiv.org/abs/2504.19223
+**Paper:** https://arxiv.org/abs/2504.19223  
 
 ![CARL](readme_images/carl.png)
 

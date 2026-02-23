@@ -262,7 +262,7 @@ class Trainer(pl.LightningModule):
         """Build feature bank from validation set for KNN evaluation."""
         self.knn_validator.clear()
 
-    def validation_step(self, batch, batch_idx, dataloader_idx):
+    def validation_step(self, batch, batch_idx, dataloader_idx = 0):
         """Perform KNN validation on a batch.
         
         Args:
@@ -411,7 +411,7 @@ class Trainer(pl.LightningModule):
                 "optimizer": optimizer,
                 "lr_scheduler": {
                     "scheduler": lr_scheduler,
-                    "interval": "step",
+                    "interval": "epoch",
                 },
         }
 

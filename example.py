@@ -13,7 +13,7 @@ def load_model(cfg):
     with open(cfg, 'r') as f:
         cfg = yaml.safe_load(f)
 
-    ckpt_path = cfg["training_kwargs"]["ckpt_path"]
+    ckpt_path = cfg["training_kwargs"]["ssl_ckpt_path"]
     checkpoint = torch.load(ckpt_path, map_location="cpu")
 
     print(cfg)
